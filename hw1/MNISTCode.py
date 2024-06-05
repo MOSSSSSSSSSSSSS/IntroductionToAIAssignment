@@ -1,6 +1,3 @@
-# Convolutional Neural Network CNN 卷积神经网络
-# 全连接神经网络：如果其中的层都是Linear线性层（全连接层），则是全连接神经网络Fully Connected Neural Network
-
 import torch
 from torchvision import transforms
 from torchvision import datasets
@@ -10,8 +7,8 @@ import torch.optim as optim
 # -----------------------------------dataset---------------------------------------------------------------------------
 batch_size = 64
 transform = transforms.Compose([
-    transforms.ToTensor(),  # 由一个28*28*1单通道像素值0到255的PIL图像，变成一个1*28*28（C H W），像素值归一化到0到1之间的浮点数
-    transforms.Normalize((0.1307, ), (0.3081, ))  # mean和std，平均值和标准差
+    transforms.ToTensor(),  
+    transforms.Normalize((0.1307, ), (0.3081, )) 
 ])
 train = datasets.MNIST(root='../dataset/mnist',
                        train=True,
@@ -52,15 +49,14 @@ class Net(torch.nn.Module):
         return self.l5(x)
 
 model = Net()
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # ############################################
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") 
 # -----------------------------------loss optimizer--------------------------------------------------------------------
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.5)  # 更好的优化算法带动量的，动量梯度下降
 # ----------------------------------------train test--------------------------------------------------------------------
 def train(epoch):
     for batch_index, data in enumerate(train_loader, 0):
-        # enumerate(train_loader, 0)会返回一个可迭代对象，其中batch_index是迭代的索引，而data是从train_loader加载的数据批次。
-        inputs, target = data  # target 64*1的矩阵，表示是哪一类0到9
+        inputs, target = data 
         inputs, target = inputs.to(device), target.to(device)
         outputs = model(inputs)  # 64 * 10的矩阵
         optimizer.zero_grad()
@@ -76,9 +72,9 @@ def test():
             inputs, target = data
             inputs, target = inputs.to(device), target.to(device)
             outputs = model(inputs)
-            _, outputs = torch.max(outputs.data, dim=1)     # 行是第0个维度，列是第一个维度，沿着第一个维度，max函数返回value和index，_，是占位符，不要value
+            _, outputs = torch.max(outputs.data, dim=1)    
             total += target.size(0)
-            correct += (outputs == target).sum().item()  # ##################
+            correct += (outputs == target).sum().item() 
     print('Accuracy on test set: %d %%' % (100*correct/total))
 
 if __name__=='__main__':
